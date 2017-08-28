@@ -20,7 +20,7 @@ public class ProcessA extends Thread {
         while (counter <= _max) {
             _buffer.push(counter);
             try {
-                Thread.sleep(ThreadLocalRandom.current().nextInt(100, 500 + 1));
+                Thread.sleep(ThreadLocalRandom.current().nextInt(1000, 1000 + 1));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

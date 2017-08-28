@@ -19,7 +19,7 @@ public class ProcessB extends Thread {
     public void run() {
 
         try {
-            Thread.sleep(ThreadLocalRandom.current().nextInt(100, 2000));
+            Thread.sleep(ThreadLocalRandom.current().nextInt(1000, 1000 + 1));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -31,7 +31,7 @@ public class ProcessB extends Thread {
                 System.out.println(_label + " pulled: " + pulled);
 
                 try {
-                    Thread.sleep(ThreadLocalRandom.current().nextInt(100, 1000 + 1));
+                    Thread.sleep(ThreadLocalRandom.current().nextInt(1000, 1000 + 1));
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
