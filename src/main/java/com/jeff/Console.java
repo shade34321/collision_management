@@ -10,7 +10,7 @@ public class Console {
         int min = 1;
         int max = 50;
 
-        DoubleBuffer<Integer> buffer = new DoubleBuffer<>(10, 1);
+        DoubleBuffer<Integer> buffer = new DoubleBuffer<>(10);
         List<Integer> list = Collections.synchronizedList(new ArrayList<Integer>());
 
         Thread processA = new ProcessA(min, max, buffer);

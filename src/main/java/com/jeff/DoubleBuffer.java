@@ -23,6 +23,10 @@ public class DoubleBuffer<T> {
     private LinkedList<T> _outboundQueue;
     private boolean _aIsInbound = false;
 
+    public DoubleBuffer(int inboundSize) {
+        this(inboundSize, 0);
+    }
+
     public DoubleBuffer(int inboundSize, int msWaitForOutboundToExceedZero) {
         _inboundSize = inboundSize;
         _queueA = new LinkedList<>();
@@ -70,7 +74,10 @@ public class DoubleBuffer<T> {
             if (_inboundQueue.size() >= _inboundSize) {
                 while (isAcceptingInput() && !_outboundQueue.isEmpty()) {
                     //if outbound queue has anything in it, we have to wait
-                    Thread.sleep(_msWaitForOutboundToExceedZero);
+                    if (_msWaitForOutboundToExceedZero > 0)
+                        Thread.sleep(_msWaitForOutboundToExceedZero);
+                    else
+                        Thread.yield();
                 }
                 toggleInboundQueue();
             }
@@ -95,7 +102,10 @@ public class DoubleBuffer<T> {
             if (_outboundQueue.isEmpty()) {
                 //if outbound queue has nothing in it and active, we have to wait
                 while (isAcceptingInput() && _outboundQueue.isEmpty()) {
-                    Thread.sleep(_msWaitForOutboundToExceedZero);
+                    if (_msWaitForOutboundToExceedZero > 0)
+                        Thread.sleep(_msWaitForOutboundToExceedZero);
+                    else
+                        Thread.yield();
                 }
 
                 if (!isAcceptingInput() && !_inboundQueue.isEmpty()) {
