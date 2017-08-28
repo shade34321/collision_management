@@ -70,7 +70,7 @@ C pulled: 25
 C pulled: 26
 A PUSHED: 36
 C pulled: 27
-B pulled: 28
+B pulled: 28  
 A PUSHED: 37
 C pulled: 29
 A PUSHED: 38
