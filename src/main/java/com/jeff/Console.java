@@ -16,14 +16,17 @@ public class Console {
         Thread processA = new ProcessA(min, max, buffer);
         Thread processB = new ProcessB("B", buffer, list);
         Thread processC = new ProcessB("C", buffer, list);
+        Thread processD = new ProcessB("D", buffer, list);
 
         processA.start();
         processB.start();
         processC.start();
+        processD.start();
 
         processA.join();
         processB.join();
         processC.join();
+        processD.join();
 
         //verify results
         Set<Integer> uniqueInt = new HashSet<>(list);

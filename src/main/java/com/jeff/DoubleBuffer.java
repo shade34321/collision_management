@@ -11,7 +11,6 @@ import java.util.concurrent.Semaphore;
  */
 public class DoubleBuffer<T> {
     private final int _inboundSize;
-    private final int _msWaitForOutboundToExceedZero;
     private final LinkedList<T> _queueA;
     private final LinkedList<T> _queueB;
     private final Semaphore _overallSem = new Semaphore(1);
@@ -24,15 +23,10 @@ public class DoubleBuffer<T> {
     private boolean _aIsInbound = false;
 
     public DoubleBuffer(int inboundSize) {
-        this(inboundSize, 0);
-    }
-
-    public DoubleBuffer(int inboundSize, int msWaitForOutboundToExceedZero) {
         _inboundSize = inboundSize;
         _queueA = new LinkedList<>();
         _queueB = new LinkedList<>();
         toggleInboundQueue();
-        _msWaitForOutboundToExceedZero = msWaitForOutboundToExceedZero;
     }
 
     public final void startShutdown() {
@@ -73,11 +67,7 @@ public class DoubleBuffer<T> {
             _inboundSem.acquire();
             if (_inboundQueue.size() >= _inboundSize) {
                 while (isAcceptingInput() && !_outboundQueue.isEmpty()) {
-                    //if outbound queue has anything in it, we have to wait
-                    if (_msWaitForOutboundToExceedZero > 0)
-                        Thread.sleep(_msWaitForOutboundToExceedZero);
-                    else
-                        Thread.yield();
+                    Thread.sleep(0);
                 }
                 toggleInboundQueue();
             }
@@ -102,10 +92,7 @@ public class DoubleBuffer<T> {
             if (_outboundQueue.isEmpty()) {
                 //if outbound queue has nothing in it and active, we have to wait
                 while (isAcceptingInput() && _outboundQueue.isEmpty()) {
-                    if (_msWaitForOutboundToExceedZero > 0)
-                        Thread.sleep(_msWaitForOutboundToExceedZero);
-                    else
-                        Thread.yield();
+                    Thread.sleep(0);
                 }
 
                 if (!isAcceptingInput() && !_inboundQueue.isEmpty()) {
