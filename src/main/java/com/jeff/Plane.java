@@ -13,21 +13,6 @@ public class Plane {
     public static final int rows = 8;
     public static final int cols = 7;
 
-    public void ShowMarker(Point[] points, String[] markers) {
-        for (int i = 0; i < points.length; i++) {
-            StringBuilder marker = new StringBuilder(markers[i]);
-            boolean collision = false;
-            for (int j = 0; j < points.length; j++ ) {
-                if (j == i) continue;
-                if (points[i].equals(points[j])) {
-                    collision = true;
-                    marker.append(markers[j]);
-                }
-            }
-            ShowMarker(points[i],collision, marker.toString());
-        }
-    }
-
     public enum Movement {
         X,
         Y,
@@ -76,10 +61,10 @@ public class Plane {
         }
     }
 
-    public Point MoveOne() {
+    public String[][] MoveOne() {
 
-        int newRow=0;
-        int newCol=0;
+        int newRow;
+        int newCol;
         switch (_movement) {
             case X:
                 newRow = (_atRow + 1) % rows;
@@ -101,22 +86,18 @@ public class Plane {
             case Random:
                 break;
         }
-        return new Point(newRow, newCol);
+        return GetState();
     }
 
     private Label GetLabelInPlane(int row, int col) {
         return _labels[row + 1][col + 1];
     }
 
-    public void ShowMarker (Point point, boolean isCollision, String marker ) {
-        ShowMarker(point.x, point.y, isCollision, marker);
-    }
-
     public void ShowMarker(int row, int col, boolean isCollision) {
         ShowMarker(row, col, isCollision, "");
     }
 
-    public void InitAll() {
+    public void ResetDisplay() {
         for (int col = 0; col < cols; col++) {
             for (int row = 0; row < rows; row++) {
                 SetEmptyFormat(row, col);
@@ -124,14 +105,38 @@ public class Plane {
         }
     }
 
+    public String GetMarker(int row, int col) {
+        Label label = GetLabelInPlane(row, col);
+        String contents = label.getText();
+
+        //if contents holds an empty marker, return nothing
+        if (contents.equals(String.format(labelFormat, Plane.emptyCell))) {
+            return "";
+        } else {
+            return contents.trim();
+        }
+    }
+
     public void ShowMarker(int row, int col, boolean isCollision, String marker) {
         Label label = GetLabelInPlane(row, col);
-        label.setText(String.format(labelFormat, marker.equals("") ? _marker : marker));
+        marker = String.format(labelFormat, marker.equals("") ? _marker : marker);
+        marker = marker.length() > labelFormat.length() ? marker.trim() : marker;
+        label.setText(marker);
         SetOccupiedFormat(label, isCollision);
         if (_movement != Movement.Set && _movement != Movement.Random) {
             SetEmptyFormat(_atRow, _atCol);
             _atRow = row;
             _atCol = col;
         }
+    }
+
+    public String[][] GetState() {
+        String[][] result = new String[rows][cols];
+        for (int col = 0; col < cols; col++) {
+            for (int row = 0; row < rows; row++) {
+                result[row][col] = (col == _atCol && row == _atRow) ? _marker : "";
+            }
+        }
+        return result;
     }
 }

@@ -9,8 +9,10 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class Display {
     public Display(int cols) throws IOException {
@@ -31,10 +33,23 @@ public class Display {
     }
 
     public void Refresh() throws IOException {
+        Refresh(0);
+    }
+    public void Refresh(int waitMs) throws IOException {
         _gui.updateScreen();
+        try {
+            if (waitMs > 0) Thread.sleep(waitMs);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void UpdateStatus(String text) {
+        UpdateStatus(text, false);
+    }
+
+    public void UpdateStatus(String text, boolean append) {
+        if (append) text = _statusBox.getText() + text;
         if (text.length() > 99) text = text.substring(0, 99);
         _statusBox.setText(" " + text);
     }
@@ -54,10 +69,27 @@ public class Display {
     private Panel _mainPanel;
     private Panel _planePanel;
     private Label _statusBox;
-    private boolean _isStarted;
+    private Plane _statusPlane;
+    private List<Plane> _planes = new ArrayList<>();
 
+    public List<Plane> GetPlanes() {
+        return _planes;
+    }
 
-    public Plane AddPlane(String title, Plane.Movement movement, String marker) {
+    public Plane GetStatusPlane() {
+        return _statusPlane;
+    }
+
+    public String[][][] GetCurrentState() {
+        String[][][] currentState = new String[3][Plane.rows][Plane.cols];
+
+        for (int i = 0; i < _planes.size(); i++) {
+            currentState[i] = GetPlanes().get(i).GetState();
+        }
+        return currentState;
+    }
+
+    public Plane AddPlane(String title, Plane.Movement movement, String marker, int initX, int initY, boolean isStatusPlane) {
         // Create panel to hold components
         Panel panel = new Panel();
         panel.setLayoutManager(new GridLayout(8));
@@ -83,7 +115,10 @@ public class Display {
         }
         panel.setSize(new TerminalSize(8,9));
         _planePanel.addComponent(panel.withBorder(Borders.singleLine(title)));
-        return new Plane(marker, movement, labels);
+        Plane newPlane =  new Plane(marker, movement, labels);
+        if (initX > -1 && initX > -1) newPlane.Initialize(initX, initY);
+        if (!isStatusPlane) { _planes.add(newPlane); } else { _statusPlane = newPlane; }
+        return newPlane;
     }
 }
 

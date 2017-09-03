@@ -1,39 +1,39 @@
 package com.jeff;
 
-import java.awt.*;
 import java.io.IOException;
 
 public class Gui {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
+        Display display = ConfigureDisplay();
 
-        Display d = new Display(2);
-        Plane x = d.AddPlane("Plane for X", Plane.Movement.X, "X");
-        Plane y = d.AddPlane("Plane for Y", Plane.Movement.Y, "Y");
-        Plane z = d.AddPlane("Plane for Z", Plane.Movement.Z, "Z");
-        Plane xyz = d.AddPlane("Plane for X, Y, Z",  Plane.Movement.Set,"");
-        x.Initialize(0,0);
-        y.Initialize(0,2);
-        z.Initialize(3,6);
-        boolean cont = true;
-        while (cont) {
-            try {
-                Thread.sleep(750);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            Point px = x.MoveOne();
-            Point py = y.MoveOne();
-            Point pz = z.MoveOne();
-            xyz.InitAll();
-            xyz.ShowMarker(new Point[] { px, py, pz}, new String[] { "X", "Y", "Z"});
-            d.Refresh();
-        }
-        d.UpdateStatus("hello!");
-        d.Refresh();
+        DoubleBuffer<String[][][]> bufferAB = new DoubleBuffer<>(1);
+        DoubleBuffer<Object[][]> bufferCD = new DoubleBuffer<>(1);
 
+        ProcessA processA = new ProcessA(bufferAB, display);
+        processA.start();
 
+        ProcessB processB = new ProcessB(display.GetCurrentState(), bufferAB, bufferCD);
+        processB.start();
 
+        ProcessC processC = new ProcessC(bufferCD, display);
+        processC.start();
 
+        processA.join();
+        processB.join();
+        processC.join();
+        System.out.println("DONE");
+
+    }
+
+    private static Display ConfigureDisplay() throws IOException {
+        Display display = new Display(2);
+        display.AddPlane("Plane for X", Plane.Movement.X, "X", 0, 0, false);
+        display.AddPlane("Plane for Y", Plane.Movement.Y, "Y", 0, 2, false);
+        display.AddPlane("Plane for Z", Plane.Movement.Z, "Z",3,6,false);
+        display.AddPlane("Process C output for X, Y, Z", Plane.Movement.Set, "",-1,-1,true);
+        display.Refresh(1000);
+
+        return display;
     }
 }
 
