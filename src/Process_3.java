@@ -22,10 +22,10 @@ public class Process_3 extends AbstractThread{
             for (int row = 0; row < read.getRowSize(); row++) {
                 String msg = "";
                 msg += getPlane(row);
-                for (int col = 1; col < read.getColSize(); col++) {
-                    int data = read.read(row, col);
-                    msg += " |" + data;
-                }
+                msg += " | " +  read.read(row, 1) + " | " + read.read(row, 2);
+                if(read.read(row, 0) > 0)
+                    msg += " Collision";
+
                 System.out.println(msg);
             }
             read.setBufferRead();

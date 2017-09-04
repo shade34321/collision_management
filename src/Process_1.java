@@ -43,13 +43,7 @@ public class Process_1 extends AbstractThread {
         }
     }
 
-    /**
-     * @param row  of read buffer, int
-     * @param col  of read buffer, int
-     * @param data int value in buffer
-     * @return boolean if there is a collision
-     * Writes Plane to buffer array
-     */
+
     private boolean writeToBuffer(int row, int col, int data) {
         boolean x = false;
         boolean y = false;

@@ -50,40 +50,40 @@ public class Process_2 extends AbstractThread {
         int plane_z = 2;
         switch (data) {
             case 1: // X
-                summarize(row, col, plane_x);
+                summarize(row, col, plane_x, 0);
                 break;
             case 3: // Y
-                summarize(row, col, plane_y);
+                summarize(row, col, plane_y, 0);
                 break;
             case 5: // Z
-                summarize(row, col, plane_z);
+                summarize(row, col, plane_z, 0);
 
                 break;
 
             /* Collision Cases */
 
             case 4: // XY
-                summarize(row, col, plane_x);
-                summarize(row, col, plane_y);
+                summarize(row, col, plane_x, 4);
+                summarize(row, col, plane_y, 4);
                 break;
             case 6: // XZ
-                summarize(row, col, plane_x);
-                summarize(row, col, plane_z);
+                summarize(row, col, plane_x, 6);
+                summarize(row, col, plane_z, 6);
                 break;
             case 8:  // YZ
-                summarize(row, col, plane_y);
-                summarize(row, col, plane_z);
+                summarize(row, col, plane_y, 8);
+                summarize(row, col, plane_z, 8);
                 break;
             case 9:  // XYZ
-                summarize(row, col, plane_x);
-                summarize(row, col, plane_y);
-                summarize(row, col, plane_z);
+                summarize(row, col, plane_x, 9);
+                summarize(row, col, plane_y, 9);
+                summarize(row, col, plane_z, 9);
                 break;
         }
     }
 
-    private void summarize(int row, int col, int plane) {
-        write.write(plane, 0, plane);
+    private void summarize(int row, int col, int plane, int collision) {
+        write.write(plane, 0, collision);
         write.write(plane, 1, row);
         write.write(plane, 2, col);
     }

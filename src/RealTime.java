@@ -62,40 +62,17 @@ public class RealTime {
     }
 
     public static int getX() {
-        return X;
+        return  X;
     }
 
     public static int getY() {
-        return Y;
+        return  Y;
     }
 
     public static int getZ() {
-        return Z;
+        return  Z;
     }
 
-    public static boolean isX(int data) {
-        return data == X;
-    }
-
-    public static boolean isY(int data) {
-        return data == Y;
-    }
-
-    public static boolean isZ(int data) {
-        return data == Z;
-    }
-
-    public static boolean isXY(int data) {
-        return data == X + Y;
-    }
-
-    public static boolean isYZ(int data) {
-        return data == Y + Z;
-    }
-
-    public static boolean isXYZ(int data) {
-        return data == X + Y + Z;
-    }
 
     public static int getInterval() {
         return interval;
