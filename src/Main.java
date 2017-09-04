@@ -3,8 +3,7 @@ public class Main {
         /* Call Management Class like this */
         RealTime RT = RealTime.getInstance();
        /* Start Threads */
-        RT.getSender().start();
-        RT.getReceive().start();
+        RT.startProcesses();
         /*Continue with main thread*/
     }
 

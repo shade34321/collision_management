@@ -11,29 +11,28 @@ public class Buffer {
      */
     private ReadWriteLock lock = new ReentrantReadWriteLock();
 
-    private int[] buffer;
-    private int bufferSize;
+    private int[][] buffer;
+    private int rowSize;
+    private int colSize;
     private boolean initialized = false;
-    private boolean[] bufferRead;  // Has buffer ID read the buffer?
+    private int readProcesses;
+    private int currentReads = 0;
 
-    public Buffer(int bufferSize, int numProcesses) {
-        this.bufferSize = bufferSize;
-        this.bufferRead = new boolean[numProcesses];
-        this.buffer = new int[bufferSize];
-        for(int i = 0; i < buffer.length; i++){
-            buffer[i] = 0;
-        }
-        for(int i = 0; i < numProcesses; i++){
-            bufferRead[i] = false;
-        }
+
+    public Buffer(int row, int col, int sharedProcesses) {
+        this.rowSize = row;
+        this.colSize = col;
+        this.readProcesses = sharedProcesses;
+        this.buffer = new int[rowSize][colSize];
+        reset();
     }
 
 
-    public int read(int key) {
+    public int read(int row, int col) {
         int msg =0;
         lock.readLock().lock();
         try{
-            msg = buffer[key];
+            msg = buffer[row][col];
         } catch (ArrayIndexOutOfBoundsException e) {
             System.err.println("Error:  Buffer array out of bounds");
             e.printStackTrace();
@@ -43,10 +42,10 @@ public class Buffer {
         }
     }
 
-    public void write(int key, int data) {
+    public void write(int row, int col, int data) {
         lock.writeLock().lock();
         try{
-            this.buffer[key] = data;
+            this.buffer[row][col] = data;
         } catch (ArrayIndexOutOfBoundsException e) {
             System.err.println("Error:  Buffer array out of bounds");
             e.printStackTrace();
@@ -54,8 +53,11 @@ public class Buffer {
             lock.writeLock().unlock();
         }
     }
-    public int getBufferSize(){
-        return bufferSize;
+    public int getRowSize(){
+        return rowSize;
+    }
+    public int getColSize(){
+        return colSize;
     }
 
 
@@ -80,35 +82,52 @@ public class Buffer {
         }
     }
 
-    public boolean isBufferRead(int id){
+    public boolean isBufferEmpty(){
         boolean bool = false;
         lock.readLock().lock();
         try{
-            bool= bufferRead[id];
+            bool= readProcesses >= currentReads;
         } finally {
             lock.readLock().unlock();
             return bool;
         }
     }
 
-    public void setBufferRead(int id, boolean flag){
-        // put a lock
+    public void setBufferRead(){
         lock.writeLock().lock();
         try{
-            bufferRead[id] = flag;
+            currentReads++;
         } finally {
             lock.writeLock().unlock();
         }
     }
-    public void bufferReadReset(boolean flag){
-        // put a lock
+
+    public void intializeProcessorForRead(){
         lock.writeLock().lock();
         try{
-            for(int i=0; i< bufferRead.length; i++)
-                bufferRead[i] = flag;
+            readProcesses++;
         } finally {
             lock.writeLock().unlock();
         }
+
+    }
+
+    public void reset(){
+        lock.writeLock().lock();
+        try{
+            for(int j = 0; j < rowSize; j++){
+                for(int i = 0; i < colSize; i++)
+                    buffer[j][i] = 0;
+            }
+            initialized = false;
+            currentReads = 0;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.err.println("Error:  Buffer array out of bounds");
+            e.printStackTrace();
+        } finally {
+            lock.writeLock().unlock();
+        }
+
     }
 
 }
