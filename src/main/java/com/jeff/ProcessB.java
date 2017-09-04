@@ -5,14 +5,12 @@ public class ProcessB extends ProcessBase {
     private final DoubleBuffer<String[][][]> _bufferAB;
     private final DoubleBuffer<Object[][]> _bufferCD;
 
-    public ProcessB(String[][][] initialState,
-                    DoubleBuffer<String[][][]> bufferAB,
+    public ProcessB(DoubleBuffer<String[][][]> bufferAB,
                     DoubleBuffer<Object[][]> bufferCD,
                     Console console) {
         super(console);
         _bufferAB = bufferAB;
         _bufferCD = bufferCD;
-        _bufferCD.push(SummarizeState(initialState));
     }
 
     @Override

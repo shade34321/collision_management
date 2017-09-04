@@ -38,7 +38,7 @@ public class ProcessA extends ProcessBase {
         int totalPlanes =  _display.GetPlanes().size();
 
         String[][][] currentState = _display.GetCurrentState();
-        _buffer.push(currentState);
+        _buffer.push(currentState.clone());
         System.out.println("A PUSHED: " + counter);
 
         while (counter < _display.Seconds) {
@@ -47,7 +47,7 @@ public class ProcessA extends ProcessBase {
                 currentState[i] = _display.GetPlanes().get(i).MoveOne();
             }
 
-            _buffer.push(currentState);
+            _buffer.push(currentState.clone());
             try {
                 Thread.sleep(_delayMs);
             } catch (InterruptedException e) {

@@ -15,7 +15,7 @@ public class Gui {
         ProcessA processA = new ProcessA(bufferAB, display, console);
         processA.start();
 
-        ProcessB processB = new ProcessB(display.GetCurrentState(), bufferAB, bufferCD, console);
+        ProcessB processB = new ProcessB(bufferAB, bufferCD, console);
         processB.start();
 
         ProcessC processC = new ProcessC(bufferCD, display, console);
