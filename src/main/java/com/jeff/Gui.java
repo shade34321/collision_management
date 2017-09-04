@@ -5,23 +5,26 @@ import java.io.IOException;
 public class Gui {
     public static void main(String[] args) throws IOException, InterruptedException {
         Display display = ConfigureDisplay();
+        Console console = new Console();
+        console.WriteLine("STARTING\r\n");
+
 
         DoubleBuffer<String[][][]> bufferAB = new DoubleBuffer<>(1);
         DoubleBuffer<Object[][]> bufferCD = new DoubleBuffer<>(1);
 
-        ProcessA processA = new ProcessA(bufferAB, display);
+        ProcessA processA = new ProcessA(bufferAB, display, console);
         processA.start();
 
-        ProcessB processB = new ProcessB(display.GetCurrentState(), bufferAB, bufferCD);
+        ProcessB processB = new ProcessB(display.GetCurrentState(), bufferAB, bufferCD, console);
         processB.start();
 
-        ProcessC processC = new ProcessC(bufferCD, display);
+        ProcessC processC = new ProcessC(bufferCD, display, console);
         processC.start();
 
         processA.join();
         processB.join();
         processC.join();
-        System.out.println("DONE");
+        console.WriteLine("DONE");
 
     }
 

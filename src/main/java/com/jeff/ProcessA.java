@@ -1,16 +1,34 @@
 package com.jeff;
 
-import java.io.IOException;
+abstract class ProcessBase extends Thread {
 
-public class ProcessA extends Thread {
+    private final Console _console;
+    protected ProcessBase(Console console) {
+        _console = console;
+    }
 
-    private final int _rounds = 20;
-    private final int _delayMs = 5000;
+    public void ConsoleWriteLine() {
+        ConsoleWriteLine("");
+    }
+
+    public void ConsoleWriteLine(String output) {
+        _console.WriteLine(output);
+    }
+
+    public void ConsoleWait() {
+        _console.Wait();
+    }
+}
+
+public class ProcessA extends ProcessBase {
+
+    private final int _delayMs = 1000;
     private final DoubleBuffer<String[][][]> _buffer;
     private final Display _display;
 
-    public ProcessA(DoubleBuffer<String[][][]> buffer, Display display) {
-         _buffer = buffer;
+    public ProcessA(DoubleBuffer<String[][][]> buffer, Display display, Console console) {
+        super(console);
+        _buffer = buffer;
          _display = display;
     }
 
@@ -23,7 +41,7 @@ public class ProcessA extends Thread {
         _buffer.push(currentState);
         System.out.println("A PUSHED: " + counter);
 
-        while (counter < _rounds) {
+        while (counter < _display.Seconds) {
             counter++;
             for (int i = 0; i < totalPlanes; i++) {
                 currentState[i] = _display.GetPlanes().get(i).MoveOne();

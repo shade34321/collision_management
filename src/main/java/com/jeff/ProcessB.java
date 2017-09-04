@@ -1,11 +1,15 @@
 package com.jeff;
 
-public class ProcessB extends Thread {
+public class ProcessB extends ProcessBase {
 
     private final DoubleBuffer<String[][][]> _bufferAB;
     private final DoubleBuffer<Object[][]> _bufferCD;
 
-    public ProcessB(String[][][] initialState, DoubleBuffer<String[][][]> bufferAB, DoubleBuffer<Object[][]> bufferCD) {
+    public ProcessB(String[][][] initialState,
+                    DoubleBuffer<String[][][]> bufferAB,
+                    DoubleBuffer<Object[][]> bufferCD,
+                    Console console) {
+        super(console);
         _bufferAB = bufferAB;
         _bufferCD = bufferCD;
         _bufferCD.push(SummarizeState(initialState));

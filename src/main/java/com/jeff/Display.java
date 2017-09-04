@@ -32,6 +32,8 @@ public class Display {
         _gui.addWindow(_window);
     }
 
+    public final int Seconds = 20;
+
     public void Refresh() throws IOException {
         Refresh(0);
     }
