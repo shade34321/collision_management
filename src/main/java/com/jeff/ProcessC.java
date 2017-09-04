@@ -27,7 +27,7 @@ public class ProcessC extends ProcessBase {
         while (!_bufferCD.isShutdown() && _second <= _display.Seconds) {
             state = _bufferCD.pull();
             System.out.println("C pulled: " + state.length);
-            ConsoleWriteLine("Second " + _second);
+            ConsoleWriteLine("SECOND " + _second);
             OutputState(state);
             ShowState(state);
             _second++;
@@ -53,6 +53,7 @@ public class ProcessC extends ProcessBase {
 
     private void ShowState(Object[][] state) {
         _statusPlane.ResetDisplay();
+        boolean noCollision = true;
         _display.UpdateStatus("Process C Second " + _second);
         for (int plane = 0; plane < state.length; plane++) {
             String marker = (String)state[plane][0];
@@ -63,10 +64,12 @@ public class ProcessC extends ProcessBase {
             _statusPlane.ShowMarker(row, col, collision, currentMarker);
             if (collision) {
                 _display.UpdateStatus(", COLLISION " + currentMarker, true);
-                ConsoleWriteLine("*** COLLISION " + currentMarker + " at second " + _second + "\r\n");
+                ConsoleWriteLine("*** Collision between " + currentMarker.substring(0,1) + " and " + currentMarker.substring(1) + " at second " + _second + ", location (" + row + ", " + col + ")\r\n");
                 _collisions++;
+                noCollision = false;
             }
         }
+        if (noCollision) ConsoleWriteLine("No collision at second " + _second + "\r\n");
         try {
             _display.Refresh();
         } catch (IOException e) {
