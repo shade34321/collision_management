@@ -22,6 +22,8 @@ public class ProcessC extends ProcessBase {
     @Override
     public void run() {
 
+        ConsoleWriteLine("PROCESS C STARTED\r\n");
+
         Object[][] state;
 
         while (!_bufferCD.isShutdown()) {

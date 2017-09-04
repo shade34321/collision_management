@@ -50,6 +50,7 @@ public class Console {
     public void Refresh() throws IOException {
         Refresh(0);
     }
+
     public void Refresh(int waitMs) throws IOException {
         _gui.updateScreen();
         try {
@@ -77,7 +78,7 @@ public class Console {
     private void AddStatusPanel() {
         Panel panel = new Panel();
         _mainPanel.addComponent(panel);
-        _statusBox = new TextBox(new TerminalSize(100, 20), TextBox.Style.MULTI_LINE);
+        _statusBox = new TextBox(new TerminalSize(100, 100), TextBox.Style.MULTI_LINE);
         panel.addComponent(_statusBox);
         panel.setLayoutData(BorderLayout.Location.BOTTOM);
     }

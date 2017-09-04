@@ -6,13 +6,14 @@ public class Gui {
     public static void main(String[] args) throws IOException, InterruptedException {
         Display display = ConfigureDisplay();
         Console console = new Console();
-        console.WriteLine("STARTING\r\n");
-
 
         DoubleBuffer<String[][][]> bufferAB = new DoubleBuffer<>(1);
         DoubleBuffer<Object[][]> bufferCD = new DoubleBuffer<>(1);
 
-        ProcessA processA = new ProcessA(bufferAB, display, console);
+        int delayMs = 1000;
+        //delayMs = 0; //set to 0 to single step
+
+        ProcessA processA = new ProcessA(delayMs, bufferAB, display, console);
         processA.start();
 
         ProcessB processB = new ProcessB(bufferAB, bufferCD, console);

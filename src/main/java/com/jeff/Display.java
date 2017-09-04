@@ -3,6 +3,8 @@ package com.jeff;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.input.KeyStroke;
+import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
@@ -42,6 +44,15 @@ public class Display {
         try {
             if (waitMs > 0) Thread.sleep(waitMs);
         } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void AwaitKeypress() {
+        try {
+            while ((_screen.readInput()).getKeyType() != KeyType.Enter) {
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
