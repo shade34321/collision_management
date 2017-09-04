@@ -7,7 +7,7 @@ public class ProcessC extends ProcessBase {
     private final DoubleBuffer<Object[][]> _bufferCD;
     private Plane _statusPlane;
     private Display _display;
-    private int _second = 0;
+    private int _second = 2;
     private int _collisions = 0;
 
     public ProcessC(DoubleBuffer<Object[][]> bufferCD,
@@ -24,7 +24,7 @@ public class ProcessC extends ProcessBase {
 
         Object[][] state;
 
-        while (!_bufferCD.isShutdown() && _second <= _display.Seconds) {
+        while (!_bufferCD.isShutdown()) {
             state = _bufferCD.pull();
             System.out.println("C pulled: " + state.length);
             ConsoleWriteLine("SECOND " + _second);
