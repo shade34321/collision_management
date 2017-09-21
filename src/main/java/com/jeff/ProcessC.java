@@ -1,5 +1,6 @@
 package com.jeff;
 
+import javax.sound.sampled.LineUnavailableException;
 import java.io.IOException;
 
 public class ProcessC extends ProcessBase {
@@ -65,8 +66,18 @@ public class ProcessC extends ProcessBase {
             boolean collision = currentMarker.length() > 1;
             _statusPlane.ShowMarker(row, col, collision, currentMarker);
             if (collision) {
+                try {
+                    SoundUtils.tone(400,50, 0.2);
+                } catch (LineUnavailableException e) {
+                    e.printStackTrace();
+                }
+
                 _display.UpdateStatus(", COLLISION " + currentMarker, true);
-                ConsoleWriteLine("*** Collision between " + currentMarker.substring(0,1) + " and " + currentMarker.substring(1) + " at second " + _second + ", location (" + row + ", " + col + ")\r\n");
+                ConsoleWriteLine("**** COLLISION between " + currentMarker.substring(0,1) + " and " +
+                        currentMarker.substring(1) + " ****" +
+                        "\nDetected at second " + _second +
+                        "\nOccurred at second " + (_second - 1) + ")" +
+                        "\nLocation (" + row + ", " + col + ")\r\n");
                 _collisions++;
                 noCollision = false;
             }

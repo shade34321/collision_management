@@ -4,8 +4,8 @@ import java.io.IOException;
 
 public class Gui {
     public static void main(String[] args) throws IOException, InterruptedException {
-        Display display = ConfigureDisplay();
         Console console = new Console();
+        Display display = ConfigureDisplay();
 
         DoubleBuffer<String[][][]> bufferAB = new DoubleBuffer<>(1);
         DoubleBuffer<Object[][]> bufferCD = new DoubleBuffer<>(1);

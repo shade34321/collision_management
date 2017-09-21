@@ -31,8 +31,8 @@ public class ProcessA extends ProcessBase {
     public ProcessA(int delayMs, DoubleBuffer<String[][][]> buffer, Display display, Console console) {
         super(console);
         _buffer = buffer;
-         _display = display;
-         _delayMs = delayMs;
+        _display = display;
+        _delayMs = delayMs;
     }
 
     @Override
