@@ -16,9 +16,20 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * CLASS Display
+ * - Handles creating a grid of 4 planes that can be updated to show X, Y, and Z trains,
+ * - plus a composite view of all 3. Also has a status window at the bottom for short messages.
+ */
 public class Display {
+
+    /**
+     * Constructor to setup grid view, colors, panels, etc.
+     * @param cols
+     * @throws IOException
+     */
     public Display(int cols) throws IOException {
-        // Setup terminal and screen layers
+
         Terminal terminal = new DefaultTerminalFactory().createTerminal();
         _screen = new TerminalScreen(terminal);
         _screen.startScreen();
@@ -34,11 +45,24 @@ public class Display {
         _gui.addWindow(_window);
     }
 
+    /**
+     * Number of seconds we are going to run the simulation
+     */
     public final int Seconds = 20;
 
+    /**
+     * Refreshes the window without any blocking after
+     * @throws IOException
+     */
     public void Refresh() throws IOException {
         Refresh(0);
     }
+
+    /**
+     * Refreshes the window, then blocks for n milliseconds
+     * @param waitMs
+     * @throws IOException
+     */
     public void Refresh(int waitMs) throws IOException {
         _gui.updateScreen();
         try {
@@ -48,6 +72,9 @@ public class Display {
         }
     }
 
+    /**
+     * Pauses execution to await a keypress. Used by single step mode.
+     */
     public void AwaitKeypress() {
         try {
             while ((_screen.readInput()).getKeyType() != KeyType.Enter) {
@@ -57,16 +84,28 @@ public class Display {
         }
     }
 
+    /**
+     * Updates the status box without appending to what is already there
+     * @param text
+     */
     public void UpdateStatus(String text) {
         UpdateStatus(text, false);
     }
 
+    /**
+     * Updates the status box and optionally appends to the current status text
+     * @param text
+     * @param append
+     */
     public void UpdateStatus(String text, boolean append) {
         if (append) text = _statusBox.getText() + text;
         if (text.length() > 99) text = text.substring(0, 99);
         _statusBox.setText(" " + text);
     }
 
+    /**
+     * Used during init to add the status panel textbox below the plane view
+     */
     private void AddStatusPanel() {
         Panel panel = new Panel();
         _mainPanel.addComponent(panel);
@@ -85,14 +124,26 @@ public class Display {
     private Plane _statusPlane;
     private List<Plane> _planes = new ArrayList<>();
 
+    /**
+     * Getter to return the list of planes
+     * @return
+     */
     public List<Plane> GetPlanes() {
         return _planes;
     }
 
+    /**
+     * Getter to return the status plane
+     * @return
+     */
     public Plane GetStatusPlane() {
         return _statusPlane;
     }
 
+    /**
+     * Getter to return the current state of all planes in a 3D matrix.
+     * @return
+     */
     public String[][][] GetCurrentState() {
         String[][][] currentState = new String[3][Plane.rows][Plane.cols];
 
@@ -102,6 +153,16 @@ public class Display {
         return currentState;
     }
 
+    /**
+     * Adds a display plane with coordinates to the overall grid. Used during initialization.
+     * @param title
+     * @param movement
+     * @param marker
+     * @param initX
+     * @param initY
+     * @param isStatusPlane
+     * @return
+     */
     public Plane AddPlane(String title, Plane.Movement movement, String marker, int initX, int initY, boolean isStatusPlane) {
         // Create panel to hold components
         Panel panel = new Panel();

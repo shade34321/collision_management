@@ -4,10 +4,14 @@ import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 
 /**
- * Generic double buffer implementation by Jeff Adkisson
- * <p>
+ * Thread-safe generic double buffer implementation
+ *
  * To use:
- * new DoubleBuffer<T>(inboundSize, msWaitForOutboundToExceedZero);
+ * new DoubleBuffer<T>(inboundSize);
+ *
+ * Automatically handles switching between the input and output buffer. When input is full, the input
+ * becomes the output buffer. When the new input buffer is full, it switches to become the output buffer IF
+ * the current output buffer is empty. This takes synchronization via semaphores.
  */
 public class DoubleBuffer<T> {
     private final int _inboundSize;
@@ -22,6 +26,10 @@ public class DoubleBuffer<T> {
     private LinkedList<T> _outboundQueue;
     private boolean _aIsInbound = false;
 
+    /**
+     * Constructor that initializes queues and sets the size of the inbound queue
+     * @param inboundSize
+     */
     public DoubleBuffer(int inboundSize) {
         _inboundSize = inboundSize;
         _queueA = new LinkedList<>();
@@ -29,14 +37,25 @@ public class DoubleBuffer<T> {
         toggleInboundQueue();
     }
 
+    /**
+     * Informs the buffer it should not accept any more data
+     */
     public final void startShutdown() {
         _startShutdown = true;
     }
 
+    /**
+     * Private getter to tell the class if it is still accepting input
+     * @return
+     */
     private boolean isAcceptingInput() {
         return !_startShutdown;
     }
 
+    /**
+     * Getter to inform caller if queue is shutdown (no longer available for processing)
+     * @return
+     */
     public final boolean isShutdown() {
         if (_isShutdown) {
             return true;
@@ -45,6 +64,9 @@ public class DoubleBuffer<T> {
         return _isShutdown = _startShutdown && remaining == 0;
     }
 
+    /**
+     * Private method that handles switching queue A and queue B from input to output, or vice versa.
+     */
     private void toggleInboundQueue() {
         try {
             _overallSem.acquire();
@@ -58,6 +80,10 @@ public class DoubleBuffer<T> {
         }
     }
 
+    /**
+     * Pushes a value into the current input buffer - no need for caller to tracker whether that is A or B.
+     * @param value
+     */
     public final void push(T value) {
         if (value == null) {
             throw new IllegalArgumentException("You cannot submit null");
@@ -85,6 +111,10 @@ public class DoubleBuffer<T> {
         }
     }
 
+    /**
+     * Extracts a value from the buffer.
+     * @return Returns null if output buffer is empty.
+     */
     public final T pull() {
         T result = null;
         try {

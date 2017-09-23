@@ -2,8 +2,20 @@ package com.jeff;
 
 import javax.sound.sampled.*;
 
+
+/**
+ * CLASS SoundUtils
+ *
+ * NOTE: This class was NOT written by the team.
+ * It was pulled from StackOverflow at this URL:
+ * https://stackoverflow.com/a/6700039
+ *
+ * Author: @RealHowTo, https://stackoverflow.com/users/25122/realhowto
+ *
+ * Used to play a beep when two or more trains collide. Not necessary
+ * for this assignment. Just an audible warning of collision.
+ */
 public class SoundUtils {
-    //class pulled from https://stackoverflow.com/a/6700039
 
     public static float SAMPLE_RATE = 8000f;
 
